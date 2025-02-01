@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 import { useThemeStore } from "./store/useThemeStore";
-import { Loader } from "lucide-react";
+import { Checkmark } from 'react-checkmark'
 
 function App() {
   const [questions, setQuestions] = useState([]);
@@ -11,6 +11,7 @@ function App() {
   const [page, setPage] = useState(0);
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [questionNumber, setQuestionNumber] = useState(0)
 
   const{theme} = useThemeStore();
 
@@ -39,6 +40,7 @@ function App() {
   const handleOptionSelect = (questionId, optionId) => {
     const updatedSelection = [...selectedOptions];
     updatedSelection[questionId] = optionId;
+    setQuestionNumber(questionId++)
     setSelectedOptions(updatedSelection);
   };
 
@@ -47,6 +49,9 @@ function App() {
   };
 
   const handleNext = (index) => {
+    const qn = index;
+    setQuestionNumber(qn+1)
+    
     let increasedByOne = index + 1;
     if (index === questions.length - 1) {
       increasedByOne = questions.length - 1;
@@ -55,6 +60,7 @@ function App() {
   };
 
   const handlePrevious = (index) => {
+
     let decreasedByOne = 0;
     if (index > 0) {
       decreasedByOne = index - 1;
@@ -73,7 +79,7 @@ function App() {
       <div className="min-h-screen flex justify-center items-center bg-base-100/70 p-4">
       {!quizCompleted ? (
         <div className="w-full max-w-2xl bg-base-100/60 shadow-md p-8 rounded-lg">
-          <h1 className="text-2xl font-bold mb-4">Questions</h1>
+          <h1 className="text-2xl font-bold mb-4">Question: {page+1}</h1>
           <div className="text-lg mb-4">
             {questions.map((question, index) => (
               <div
@@ -83,7 +89,7 @@ function App() {
                 <div className="mb-4">
                   <p className="font-semibold">{question.description}</p>
                   <ul className="space-y-2">
-                    {question.options.map((option) => (
+                    {question.options.map((option,index) => (
                       <li
                        
                         key={option.id}
@@ -98,7 +104,7 @@ function App() {
                             : "hover:bg-gray-200"
                         }`}
                       >
-                        Option {option.id}: {option.description}
+                        {index+1}: {option.description}
                       </li>
                     ))}
                   </ul>
@@ -106,7 +112,9 @@ function App() {
                 <div className="flex justify-between mt-4">
                   {index > 0 && (
                     <button
-                      onClick={() => handlePrevious(index)}
+                      onClick={() => {
+                        handlePrevious(index)
+                      }}
                       className="px-4 py-2 bg-base-300 rounded-lg hover:bg-gray-400"
                     >
                       Previous
@@ -139,6 +147,7 @@ function App() {
             You answered {correctAnswer} out of {questions.length} questions
             correctly.
           </p>
+          <Checkmark size='128px' color='blue' />
           <button
             onClick={() => window.location.reload()}
             className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
