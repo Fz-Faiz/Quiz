@@ -12,4 +12,5 @@ Currently, two official plugins are available:
 - npm install
 - npm i axios
 - npm i zustand
+- npm i react-checkmark
 - setup tailwind css and daisyUi
