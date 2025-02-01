@@ -11,7 +11,6 @@ function App() {
   const [page, setPage] = useState(0);
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [questionNumber, setQuestionNumber] = useState(0)
 
   const{theme} = useThemeStore();
 
@@ -40,7 +39,6 @@ function App() {
   const handleOptionSelect = (questionId, optionId) => {
     const updatedSelection = [...selectedOptions];
     updatedSelection[questionId] = optionId;
-    setQuestionNumber(questionId++)
     setSelectedOptions(updatedSelection);
   };
 
@@ -49,8 +47,7 @@ function App() {
   };
 
   const handleNext = (index) => {
-    const qn = index;
-    setQuestionNumber(qn+1)
+
     
     let increasedByOne = index + 1;
     if (index === questions.length - 1) {
@@ -147,7 +144,7 @@ function App() {
             You answered {correctAnswer} out of {questions.length} questions
             correctly.
           </p>
-          <Checkmark size='128px' color='blue' />
+          <Checkmark size='128px' color='green' />
           <button
             onClick={() => window.location.reload()}
             className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
