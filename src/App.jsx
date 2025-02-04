@@ -36,11 +36,16 @@ function App() {
     )
   }
 
-  const handleOptionSelect = (questionId, optionId) => {
-    const updatedSelection = [...selectedOptions];
-    updatedSelection[questionId] = optionId;
-    setSelectedOptions(updatedSelection);
+  const handleOptionSelect = (questionId, optionId, isCorrect) => {
+    setSelectedOptions((prev) => {
+      const alreadySelected = prev[questionId]; 
+      if (!alreadySelected && isCorrect) {
+        setCorrectAnswer((prev) => prev + 1);
+      }
+      return { ...prev, [questionId]: optionId };
+    });
   };
+  
 
   const handleSubmit = () => {
     setQuizCompleted(true);
@@ -65,10 +70,6 @@ function App() {
     setPage(decreasedByOne);
   };
 
-  const handleCorrectAnswer = () => {
-    setCorrectAnswer(correctAnswer+1)
-
-  }
 
   return (
     <div className="h-screen bg-gray-300" data-theme={theme}>
@@ -86,24 +87,24 @@ function App() {
                 <div className="mb-4">
                   <p className="font-semibold">{question.description}</p>
                   <ul className="space-y-2">
-                    {question.options.map((option,index) => (
-                      <li
-                       
-                        key={option.id}
-                        onClick={() => {
-                          handleOptionSelect(index, option.id);
-                          if(option.is_correct) handleCorrectAnswer()
-                          
-                        }}
-                        className={`cursor-pointer p-2 rounded-md border transition-all ${
-                          selectedOptions[index] === option.id
-                            ? "bg-blue-500 text-white"
-                            : "hover:bg-gray-200"
-                        }`}
-                      >
-                        {index+1}: {option.description}
-                      </li>
-                    ))}
+                  {question.options.map((option, index) => (
+                    <li
+                      key={option.id || index}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => {
+                        handleOptionSelect(question.id, option.id, option.is_correct)
+                      }}
+                      className={`cursor-pointer p-2 rounded-md border transition-all ${
+                        selectedOptions[question.id] === option.id
+                          ? "bg-blue-500 text-white"
+                          : "hover:bg-gray-200"
+                      }`}
+                    >
+                      {index + 1}: {option.description}
+                    </li>
+                  ))}
+
                   </ul>
                 </div>
                 <div className="flex justify-between mt-4">
